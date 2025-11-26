@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub图片展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #ff7b00;
+            color: #121212;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .image-card {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .image-container {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .image-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .image-info {
+            padding: 1.2rem;
+        }
+        
+        .image-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #ff7b00;
+        }
+        
+        .image-desc {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        footer {
+            background-color: #1e1e1e;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-top: 2px solid #ff7b00;
+        }
+        
+        .github-link {
+            color: #ff7b00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .github-link:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #ff7b00;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Monkeyhub</h1>
+        
+    </header>
+    
+    <div class="container">
+        <div class="gallery" id="gallery">
+            <!-- 图片将通过JavaScript动态加载 -->
+            <div class="loading">正在加载图片...</div>
+        </div>
+    </div>
+    
+   
+    
+    <script>
+        // 配置部分 - 请修改以下信息以匹配您的GitHub仓库
+        const config = {
+            // GitHub用户名
+            username: "Brandon3012",
+            // 仓库名称
+            repository: "Monkey",
+            // 仓库分支（默认为main）
+            branch: "main",
+            // 图片所在文件夹路径（如果图片在根目录，则留空）
+            folderPath: "images/",
+           
+        };
+        
+        // 构建GitHub仓库链接
+        const repoUrl = `https://github.com/${config.username}/${config.repository}`;
+        document.getElementById('repo-link').href = repoUrl;
+        
+        // 构建GitHub原始内容URL
+        function buildImageUrl(filename) {
+            return `https://raw.githubusercontent.com/${config.username}/${config.repository}/${config.branch}/${config.folderPath}${filename}`;
+        }
+        
+        // 生成图片卡片HTML
+        function createImageCard(imageData) {
+            const [filename, title, description] = imageData;
+            const imageUrl = buildImageUrl(filename);
+            
+            return `
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="${imageUrl}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">${title}</h3>
+                        <p class="image-desc">${description}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 渲染图片画廊
+        function renderGallery() {
+            const galleryElement = document.getElementById('gallery');
+            
+            if (config.images.length === 0) {
+                galleryElement.innerHTML = '<div class="loading">没有找到图片</div>';
+                return;
+            }
+            
+            galleryElement.innerHTML = config.images.map(createImageCard).join('');
+        }
+        
+        // 页面加载完成后渲染画廊
+        document.addEventListener('DOMContentLoaded', renderGallery);
+    </script>
+</body>
+</html>
