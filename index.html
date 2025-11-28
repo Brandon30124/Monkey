@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monkeyhub</title>
+    <title>MONKEYHUB</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
         }
         
         body {
@@ -118,196 +117,96 @@
             color: #ff7b00;
         }
         
-
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Monkeyhub</h1>
+    </header>
+    
     <div class="container">
-        <header>
-            <h1>Monkeyhub</h1>
-            <p class="description"></p>
-            
-            <div id="library-info" class="library-info">正在加载...</div>
-            
-            <div class="mobile-tips">
-                提示：在移动端，长按图片即可保存图片到您的相册
-            </div>
-        </header>
-        
-        <section id="gallery" class="gallery">
-            <div class="no-images">正在加载...</div>
-        </section>
+        <div class="gallery" id="gallery">
+            <!-- 图片将通过JavaScript动态加载 -->
+            <div class="loading">正在加载图片...</div>
+        </div>
     </div>
-
+    
+    <footer>
+        
+    </footer>
+    
     <script>
-        // 配置您的GitHub信息
-        const GITHUB_USERNAME = 'Brandon30124';
-        const REPOSITORY_NAME = 'A';
-        const BRANCH = 'main'; // 仓库分支，通常是main或master
+        // 配置部分 - 请修改以下信息以匹配您的GitHub仓库
+        const config = {
+            // GitHub用户名
+            username: "Brandon30124",
+            // 仓库名称
+            repository: "Monkey",
+            // 仓库分支（默认为main）
+            branch: "main",
+            // 图片所在文件夹路径（如果图片在根目录，则留空）
+            folderPath: "images/",
+            // 图片数据 - 格式: [文件名, 标题, 描述]
+           
+        };
         
-        // 定义要加载的库（文件夹）
-        const LIBRARIES = [
-            { id: 'hou', name: 'hou' }
-         
-        ];
+        // 构建GitHub仓库链接
+        const repoUrl = `https://github.com/${config.username}/${config.repository}`;
+        document.getElementById('repo-link').href = repoUrl;
         
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAllImages();
-        });
+        // 构建GitHub原始内容URL
+        function buildImageUrl(filename) {
+            return `https://raw.githubusercontent.com/${config.username}/${config.repository}/${config.branch}/${config.folderPath}${filename}`;
+        }
         
-        // 获取并显示所有图片
-        async function loadAllImages() {
-            const gallery = document.getElementById('gallery');
-            const libraryInfo = document.getElementById('library-info');
+        // 生成图片卡片HTML
+        function createImageCard(imageData) {
+            const [filename, title, description] = imageData;
+            const imageUrl = buildImageUrl(filename);
             
-            try {
-                // 显示加载状态
-                gallery.innerHTML = '<div class="no-images">加载中...</div>';
-                
-                let allImages = [];
-                
-                // 获取所有库中的图片
-                for (const library of LIBRARIES) {
-                    // 构建GitHub API URL
-                    const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPOSITORY_NAME}/contents/${library.id}`;
-                    
-                    const response = await fetch(apiUrl);
-                    
-                    if (!response.ok) {
-                        console.warn(`无法获取库 ${library.name} 的内容`);
-                        continue;
-                    }
-                    
-                    const contents = await response.json();
-                    
-                    // 过滤出PNG和JPG图片
-                    const images = contents.filter(item => 
-                        item.type === 'file' && 
-                        (item.name.toLowerCase().endsWith('.png') || 
-                         item.name.toLowerCase().endsWith('.jpg') ||
-                         item.name.toLowerCase().endsWith('.jpeg'))
-                    );
-                    
-                    // 添加库信息到图片对象
-                    images.forEach(img => {
-                        img.library = library.name;
-                    });
-                    
-                    allImages = allImages.concat(images);
-                }
-                
-                // 清空画廊
-                gallery.innerHTML = '';
-                
-                if (allImages.length === 0) {
-                    gallery.innerHTML = '<div class="no-images">暂无图片，请联系管理员</div>';
-                    libraryInfo.textContent = '没有找到任何表情包';
-                    return;
-                }
-                
-                // 更新库信息
-                libraryInfo.textContent = `共加载 ${allImages.length} 张表情包`;
-                
-                // 显示图片
-                allImages.forEach(image => {
-                    const imageCard = document.createElement('div');
-                    imageCard.className = 'image-card';
-                    
-                    imageCard.innerHTML = `
-                        <div class="image-container">
-                            <img src="${image.download_url}" alt="${image.name}" loading="lazy">
-                        </div>
-                        <div class="image-info">
-                            <button data-url="${image.download_url}" data-name="${image.name}">
-                                <span class="btn-text">下载</span>
-                            </button>
-                        </div>
-                    `;
-                    
-                    gallery.appendChild(imageCard);
-                });
-                
-                // 为所有下载按钮添加事件监听器
-                document.querySelectorAll('.image-info button').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const url = this.getAttribute('data-url');
-                        const name = this.getAttribute('data-name');
-                        downloadImage(url, name, this);
-                    });
-                });
-                
-            } catch (error) {
-                gallery.innerHTML = `<div class="no-images">加载图片时出错: ${error.message}</div>`;
-                libraryInfo.textContent = '加载失败，请稍后重试';
-                console.error('Error loading images:', error);
-            }
+            return `
+                <div class="image-card">
+                    <div class="image-container">
+                        <img src="${imageUrl}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="image-info">
+                        <h3 class="image-title">${title}</h3>
+                        <p class="image-desc">${description}</p>
+                    </div>
+                </div>
+            `;
         }
         
-        // 下载图片函数 - 使用Blob方式避免通过GitHub直接下载
-        async function downloadImage(url, filename, button) {
-            try {
-                // 显示加载提示
-                const btnText = button.querySelector('.btn-text');
-                const originalText = btnText.textContent;
-                btnText.innerHTML = '<span class="loading"></span>下载中...';
-                button.disabled = true;
-                
-                // 获取图片数据
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('无法下载图片');
-                }
-                
-                const blob = await response.blob();
-                
-                // 创建临时下载链接
-                const blobUrl = URL.createObjectURL(blob);
-                
-                // 针对不同设备使用不同的下载方法
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    // 移动设备：使用新窗口打开图片，让用户手动保存
-                    const newWindow = window.open(blobUrl, '_blank');
-                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                        // 如果弹窗被阻止，显示提示
-                        alert('请在弹出窗口中长按图片保存到相册。如果未弹出，请检查浏览器设置允许弹窗。');
-                    }
-                } else {
-                    // 桌面设备：使用下载链接
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-                
-                // 清理
-                setTimeout(() => {
-                    URL.revokeObjectURL(blobUrl);
-                }, 100);
-                
-                // 恢复按钮状态
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                    button.disabled = false;
-                }, 1500);
-                
-            } catch (error) {
-                console.error('下载失败:', error);
-                alert('下载失败，请重试或稍后再试');
-                
-                // 恢复按钮状态
-                const btnText = button.querySelector('.btn-text');
-                btnText.textContent = '下载';
-                button.disabled = false;
+        // 渲染图片画廊
+        function renderGallery() {
+            const galleryElement = document.getElementById('gallery');
+            
+            if (config.images.length === 0) {
+                galleryElement.innerHTML = '<div class="loading">没有找到图片</div>';
+                return;
             }
+            
+            galleryElement.innerHTML = config.images.map(createImageCard).join('');
         }
+        
+        // 页面加载完成后渲染画廊
+        document.addEventListener('DOMContentLoaded', renderGallery);
     </script>
 </body>
 </html>
-
