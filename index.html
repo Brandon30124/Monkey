@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONKEYHUB</title>
+    <title>MONKEYHUB - 图片资源库</title>
     <style>
         * {
             margin: 0;
@@ -12,28 +12,47 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1a1a2e 50%, #16213e 100%);
             color: #f0f0f0;
             line-height: 1.6;
+            min-height: 100vh;
         }
         
         header {
-            background-color: #ff7b00;
+            background: linear-gradient(90deg, #ff7b00 0%, #ff5500 100%);
             color: #121212;
-            padding: 2rem 0;
+            padding: 2.5rem 0;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(255, 123, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
+            font-weight: 500;
+            position: relative;
         }
         
         .container {
@@ -42,29 +61,52 @@
             padding: 0 1.5rem;
         }
         
+        .info-panel {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #ff7b00;
+        }
+        
+        .info-panel h2 {
+            color: #ff7b00;
+            margin-bottom: 0.8rem;
+            font-size: 1.5rem;
+        }
+        
+        .info-panel p {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            gap: 1.8rem;
             margin-top: 2rem;
         }
         
         .image-card {
-            background-color: #1e1e1e;
-            border-radius: 8px;
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            border: 1px solid #333;
         }
         
         .image-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(255, 123, 0, 0.2);
+            border-color: #ff7b00;
         }
         
         .image-container {
-            height: 250px;
+            height: 220px;
             overflow: hidden;
+            position: relative;
         }
         
         .image-container img {
@@ -75,29 +117,36 @@
         }
         
         .image-card:hover img {
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
         
         .image-info {
-            padding: 1.2rem;
+            padding: 1.5rem;
         }
         
         .image-title {
             font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
             color: #ff7b00;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .image-desc {
             font-size: 0.9rem;
             color: #aaa;
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
         }
         
         footer {
-            background-color: #1e1e1e;
+            background: rgba(30, 30, 30, 0.9);
             text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 3rem;
+            padding: 2rem 0;
+            margin-top: 4rem;
             border-top: 2px solid #ff7b00;
         }
         
@@ -105,16 +154,40 @@
             color: #ff7b00;
             text-decoration: none;
             font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .github-link:hover {
             text-decoration: underline;
+            color: #ff9a42;
         }
         
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: #ff7b00;
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+        }
+        
+        .loading::after {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 123, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #ff7b00;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* 移动端优化 */
@@ -122,20 +195,30 @@
             display: none;
             text-align: center;
             margin: 15px 0;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
+            padding: 12px;
+            background-color: rgba(248, 249, 250, 0.1);
+            border-radius: 8px;
             font-size: 0.9rem;
-            color: #666;
+            color: #ccc;
+            border-left: 3px solid #ff7b00;
         }
         
         @media (max-width: 768px) {
             .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.2rem;
             }
             
             .mobile-tips {
                 display: block;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
             }
         }
         
@@ -148,86 +231,296 @@
                 width: 100%;
                 padding: 12px;
             }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
         
         button {
-            background-color: #ff7b00;
+            background: linear-gradient(90deg, #ff7b00, #ff5500);
             color: #121212;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 18px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(255, 123, 0, 0.3);
         }
         
         button:hover {
-            background-color: #ff9a42;
+            background: linear-gradient(90deg, #ff9a42, #ff7b00);
+            box-shadow: 0 6px 12px rgba(255, 123, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
         
         button:disabled {
-            background-color: #666;
+            background: #666;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(30, 30, 30, 0.6);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff7b00;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+            color: #888;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff7b00;
+        }
+        
+        .config-panel {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #ff7b00;
+        }
+        
+        .config-panel h3 {
+            color: #ff7b00;
+            margin-bottom: 1rem;
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .config-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .config-item label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .config-item input {
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .config-item input:focus {
+            outline: none;
+            border-color: #ff7b00;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Monkeyhub</h1>
+        <h1>MONKEYHUB</h1>
+        <div class="subtitle">高质量图片资源库</div>
     </header>
     
     <div class="container">
+        <div class="info-panel">
+            <h2>欢迎使用 MonkeyHub</h2>
+            <p>这是一个从GitHub仓库加载图片的在线资源库。您可以通过修改下方配置来加载不同仓库的图片。</p>
+            <p>如果图片无法加载，请检查GitHub仓库配置是否正确，并确保仓库是公开的。</p>
+        </div>
+        
+        <div class="config-panel">
+            <h3>GitHub仓库配置</h3>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label for="username">GitHub用户名</label>
+                    <input type="text" id="username" value="Brandon30124">
+                </div>
+                <div class="config-item">
+                    <label for="repo">仓库名称</label>
+                    <input type="text" id="repo" value="Monkey">
+                </div>
+                <div class="config-item">
+                    <label for="folder">图片文件夹路径 (留空为根目录)</label>
+                    <input type="text" id="folder" value="">
+                </div>
+                <div class="config-item">
+                    <label for="branch">分支名称</label>
+                    <input type="text" id="branch" value="main">
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="loadBtn">加载图片</button>
+                <button id="resetBtn">重置配置</button>
+            </div>
+        </div>
+        
+        <div class="mobile-tips">
+            提示：在移动设备上，点击下载按钮后可能需要长按图片保存
+        </div>
+        
         <div class="gallery" id="gallery">
             <div class="loading">正在加载图片...</div>
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-item">
+                <div class="stat-value" id="totalImages">0</div>
+                <div class="stat-label">图片总数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalSize">0 MB</div>
+                <div class="stat-label">总大小</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="lastUpdated">-</div>
+                <div class="stat-label">最后更新</div>
+            </div>
         </div>
     </div>
     
     <footer>
-        
+        <p>Powered by GitHub API | <a href="https://github.com/Brandon30124/Monkey" class="github-link" target="_blank">查看源代码仓库</a></p>
     </footer>
     
     <script>
-        // 配置您的GitHub信息
-        const GITHUB_USERNAME = 'Brandon30124';
-        const REPOSITORY_NAME = 'Monkey';
-        const IMAGE_FOLDER = ''; // 图片所在的文件夹路径，如果图片在根目录则设为空字符串 ''
-        const BRANCH = 'main'; // 仓库分支，通常是main或master
+        // 默认配置
+        const defaultConfig = {
+            username: 'Brandon30124',
+            repo: 'Monkey',
+            folder: '',
+            branch: 'main'
+        };
+        
+        // 从本地存储加载配置或使用默认值
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('monkeyhub-config');
+            if (savedConfig) {
+                return {...defaultConfig, ...JSON.parse(savedConfig)};
+            }
+            return defaultConfig;
+        }
+        
+        // 保存配置到本地存储
+        function saveConfig(config) {
+            localStorage.setItem('monkeyhub-config', JSON.stringify(config));
+        }
+        
+        // 更新配置表单
+        function updateConfigForm(config) {
+            document.getElementById('username').value = config.username;
+            document.getElementById('repo').value = config.repo;
+            document.getElementById('folder').value = config.folder;
+            document.getElementById('branch').value = config.branch;
+        }
         
         // 获取并显示图片
         async function loadImages() {
             const gallery = document.getElementById('gallery');
+            const stats = document.getElementById('stats');
+            
+            // 获取当前配置
+            const config = {
+                username: document.getElementById('username').value,
+                repo: document.getElementById('repo').value,
+                folder: document.getElementById('folder').value,
+                branch: document.getElementById('branch').value
+            };
+            
+            // 保存配置
+            saveConfig(config);
             
             try {
                 // 构建GitHub API URL
-                const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPOSITORY_NAME}/contents/${IMAGE_FOLDER}?ref=${BRANCH}`;
+                let apiUrl = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${config.folder}?ref=${config.branch}`;
+                
+                // 显示加载状态
+                gallery.innerHTML = '<div class="loading">正在从GitHub加载图片...</div>';
+                stats.style.display = 'none';
+                
+                console.log('正在请求GitHub API:', apiUrl);
                 
                 const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
                     if (response.status === 403) {
-                        throw new Error('API限制，请稍后重试');
+                        throw new Error('GitHub API限制，请稍后重试');
                     } else if (response.status === 404) {
-                        throw new Error('仓库不存在或路径错误');
+                        throw new Error(`仓库不存在或路径错误: ${config.username}/${config.repo}`);
                     } else {
                         throw new Error(`HTTP错误: ${response.status}`);
                     }
                 }
                 
                 const contents = await response.json();
+                console.log('GitHub API返回数据:', contents);
                 
-                // 过滤出PNG和JPG图片
+                // 过滤出图片文件
                 const images = contents.filter(item => 
                     item.type === 'file' && 
-                    (item.name.toLowerCase().endsWith('.png') || 
-                     item.name.toLowerCase().endsWith('.jpg') ||
-                     item.name.toLowerCase().endsWith('.jpeg'))
+                    /\.(png|jpg|jpeg|gif|bmp|webp|svg)$/i.test(item.name)
                 );
+                
+                console.log('找到图片:', images);
                 
                 // 清空画廊
                 gallery.innerHTML = '';
                 
                 if (images.length === 0) {
-                    gallery.innerHTML = '<div class="loading">暂无图片</div>';
+                    gallery.innerHTML = `
+                        <div class="empty-state">
+                            <h3>暂无图片</h3>
+                            <p>请检查：</p>
+                            <p>1. 仓库中是否有图片文件 (PNG, JPG, JPEG, GIF, BMP, WebP, SVG)</p>
+                            <p>2. 配置信息是否正确</p>
+                            <p>3. 仓库是否为公开状态</p>
+                        </div>
+                    `;
                     return;
                 }
                 
@@ -238,11 +531,21 @@
                     
                     imageCard.innerHTML = `
                         <div class="image-container">
-                            <img src="${image.download_url}" alt="${image.name}" loading="lazy">
+                            <img src="${image.download_url}" alt="${image.name}" loading="lazy" 
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMzMzIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='">
                         </div>
                         <div class="image-info">
-                            <h3 class="image-title">${image.name}</h3>
+                            <h3 class="image-title" title="${image.name}">${image.name}</h3>
+                            <div class="image-desc">
+                                <span>大小: ${(image.size / 1024).toFixed(2)} KB</span>
+                                <span>类型: ${image.name.split('.').pop().toUpperCase()}</span>
+                            </div>
                             <button data-url="${image.download_url}" data-name="${image.name}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
                                 <span class="btn-text">下载</span>
                             </button>
                         </div>
@@ -250,6 +553,9 @@
                     
                     gallery.appendChild(imageCard);
                 });
+                
+                // 更新统计数据
+                updateStats(images);
                 
                 // 为所有下载按钮添加事件监听器
                 document.querySelectorAll('.image-info button').forEach(button => {
@@ -261,9 +567,39 @@
                 });
                 
             } catch (error) {
-                gallery.innerHTML = `<div class="loading">加载失败: ${error.message}</div>`;
-                console.error('Error loading images:', error);
+                console.error('加载错误详情:', error);
+                gallery.innerHTML = `
+                    <div class="empty-state">
+                        <h3>加载失败</h3>
+                        <p>错误信息: ${error.message}</p>
+                        <p>常见问题：</p>
+                        <p>1. 检查GitHub用户名和仓库名是否正确</p>
+                        <p>2. 确认仓库是公开的</p>
+                        <p>3. 检查网络连接</p>
+                        <p>4. 可能是GitHub API限制，请稍后重试</p>
+                    </div>
+                `;
             }
+        }
+        
+        // 更新统计数据
+        function updateStats(images) {
+            const stats = document.getElementById('stats');
+            const totalImages = document.getElementById('totalImages');
+            const totalSize = document.getElementById('totalSize');
+            const lastUpdated = document.getElementById('lastUpdated');
+            
+            // 计算总大小
+            const totalSizeBytes = images.reduce((sum, image) => sum + image.size, 0);
+            const totalSizeMB = (totalSizeBytes / (1024 * 1024)).toFixed(2);
+            
+            // 更新统计信息
+            totalImages.textContent = images.length;
+            totalSize.textContent = `${totalSizeMB} MB`;
+            lastUpdated.textContent = new Date().toLocaleTimeString();
+            
+            // 显示统计面板
+            stats.style.display = 'flex';
         }
         
         // 下载图片函数
@@ -326,8 +662,22 @@
             }
         }
         
-        // 页面加载完成后获取图片
-        document.addEventListener('DOMContentLoaded', loadImages);
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载保存的配置
+            const config = loadConfig();
+            updateConfigForm(config);
+            
+            // 添加事件监听器
+            document.getElementById('loadBtn').addEventListener('click', loadImages);
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                updateConfigForm(defaultConfig);
+                saveConfig(defaultConfig);
+            });
+            
+            // 初始加载图片
+            loadImages();
+        });
     </script>
 </body>
 </html>
