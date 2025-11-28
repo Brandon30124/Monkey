@@ -65,13 +65,20 @@
         .image-container {
             height: 250px;
             overflow: hidden;
+            position: relative;
+            background-color: #2a2a2a;
         }
         
         .image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .image-container img.loaded {
+            opacity: 1;
         }
         
         .image-card:hover img {
@@ -117,6 +124,30 @@
             color: #ff7b00;
         }
         
+        /* 图片加载占位符 */
+        .image-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
         /* 响应式设计 */
         @media (max-width: 768px) {
             .gallery {
@@ -138,6 +169,7 @@
 <body>
     <header>
         <h1>Monkeyhub</h1>
+        
     </header>
     
     <div class="container">
@@ -148,7 +180,7 @@
     </div>
     
     <footer>
-        
+        <p>© 2023 Monkeyhub | <a href="#" class="github-link" id="repo-link">GitHub 仓库</a></p>
     </footer>
     
     <script>
@@ -163,7 +195,14 @@
             // 图片所在文件夹路径（如果图片在根目录，则留空）
             folderPath: "images/",
             // 图片数据 - 格式: [文件名, 标题, 描述]
-           
+            images: [
+                ["image1.jpg", "", ""],
+                ["image2.jpg", "", ""],
+                ["image3.jpg", "", ""],
+                ["image4.jpg", "", ""],
+                ["image5.jpg", "", ""],
+                ["image6.jpg", "", ""]
+            ]
         };
         
         // 构建GitHub仓库链接
@@ -183,7 +222,14 @@
             return `
                 <div class="image-card">
                     <div class="image-container">
-                        <img src="${imageUrl}" alt="${title}" loading="lazy">
+                        <div class="image-placeholder"></div>
+                        <img 
+                            src="${imageUrl}" 
+                            alt="${title}" 
+                            loading="lazy"
+                            onload="this.classList.add('loaded')"
+                            onerror="this.parentNode.innerHTML='<div style=\\'height:100%;display:flex;align-items:center;justify-content:center;color:#ff7b00;\\'>图片加载失败</div>'"
+                        >
                     </div>
                     <div class="image-info">
                         <h3 class="image-title">${title}</h3>
@@ -207,7 +253,35 @@
         
         // 页面加载完成后渲染画廊
         document.addEventListener('DOMContentLoaded', renderGallery);
+        
+        // 实现图片懒加载的Intersection Observer
+        document.addEventListener('DOMContentLoaded', function() {
+            // 如果浏览器支持Intersection Observer API，使用它进行懒加载
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            // 如果图片还没有加载，开始加载
+                            if (!img.src) {
+                                img.src = img.dataset.src;
+                            }
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+                
+                // 延迟执行，确保DOM已完全渲染
+                setTimeout(() => {
+                    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                        // 将src保存到data-src，然后清空src
+                        img.dataset.src = img.src;
+                        img.src = '';
+                        imageObserver.observe(img);
+                    });
+                }, 100);
+            }
+        });
     </script>
 </body>
 </html>
-
