@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub图片展示</title>
+    <title>MONKEYHUB</title>
     <style>
         * {
             margin: 0;
@@ -138,7 +138,7 @@
 <body>
     <header>
         <h1>Monkeyhub</h1>
-        
+        <p class="subtitle">GitHub图片展示</p>
     </header>
     
     <div class="container">
@@ -148,7 +148,9 @@
         </div>
     </div>
     
-   
+    <footer>
+        <p>访问 <a href="#" id="repo-link" class="github-link">GitHub仓库</a></p>
+    </footer>
     
     <script>
         // 配置部分 - 请修改以下信息以匹配您的GitHub仓库
@@ -161,6 +163,7 @@
             branch: "main",
             // 图片所在文件夹路径（如果图片在根目录，则留空）
             folderPath: "images/",
+            // 图片数据 - 格式: [文件名, 标题, 描述]
            
         };
         
@@ -207,5 +210,4 @@
         document.addEventListener('DOMContentLoaded', renderGallery);
     </script>
 </body>
-
 </html>
