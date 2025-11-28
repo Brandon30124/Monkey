@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONKEYHUB</title>
+    <title>Monkeyhub</title>
     <style>
+        :root {
+            --primary-color: #FF6600;
+            --secondary-color: #000000;
+            --text-color: #FFFFFF;
+            --card-bg: #1a1a1a;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,23 +19,23 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
             line-height: 1.6;
         }
         
         header {
-            background-color: #ff7b00;
-            color: #121212;
-            padding: 2rem 0;
+            background-color: var(--primary-color);
+            padding: 2rem 1rem;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         
         .subtitle {
@@ -39,7 +46,7 @@
         .container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 1.5rem;
+            padding: 0 1rem;
         }
         
         .gallery {
@@ -50,124 +57,102 @@
         }
         
         .image-card {
-            background-color: #1e1e1e;
+            background-color: var(--card-bg);
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         
         .image-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(255, 102, 0, 0.3);
         }
         
-        .image-container {
-            height: 250px;
-            overflow: hidden;
-        }
-        
-        .image-container img {
+        .image-card img {
             width: 100%;
-            height: 100%;
+            height: 200px;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            display: block;
+            -webkit-touch-callout: none; /* 防止iOS长按时出现菜单 */
         }
         
-        .image-card:hover img {
-            transform: scale(1.05);
+        .download-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
-        .image-info {
-            padding: 1.2rem;
+        .image-card:hover .download-btn {
+            opacity: 1;
         }
         
-        .image-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #ff7b00;
-        }
-        
-        .image-desc {
-            font-size: 0.9rem;
-            color: #aaa;
+        .download-btn:hover {
+            background-color: #e55a00;
         }
         
         footer {
-            background-color: #1e1e1e;
+            background-color: var(--primary-color);
             text-align: center;
-            padding: 1.5rem 0;
+            padding: 1.5rem;
             margin-top: 3rem;
-            border-top: 2px solid #ff7b00;
-        }
-        
-        .github-link {
-            color: #ff7b00;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .github-link:hover {
-            text-decoration: underline;
         }
         
         .loading {
             text-align: center;
             padding: 2rem;
-            color: #ff7b00;
+            font-size: 1.2rem;
         }
         
-        /* 移动端优化 */
-        .mobile-tips {
-            display: none;
-            text-align: center;
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #f8f9fa;
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
             border-radius: 4px;
-            font-size: 0.9rem;
-            color: #666;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
         }
         
         @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            h1 {
+                font-size: 2.2rem;
             }
             
-            .mobile-tips {
-                display: block;
-            }
-        }
-        
-        @media (max-width: 480px) {
             .gallery {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
             
-            .image-info button {
-                width: 100%;
-                padding: 12px;
+            /* 在移动设备上始终显示下载按钮 */
+            .download-btn {
+                opacity: 0.8;
             }
-        }
-        
-        button {
-            background-color: #ff7b00;
-            color: #121212;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: #ff9a42;
-        }
-        
-        button:disabled {
-            background-color: #666;
-            cursor: not-allowed;
+            
+            /* 禁用图片选择，防止长按时出现文本选择 */
+            .image-card img {
+                user-select: none;
+                -webkit-user-select: none;
+                -webkit-touch-callout: none;
+            }
         }
     </style>
 </head>
@@ -177,157 +162,116 @@
     </header>
     
     <div class="container">
-        <div class="gallery" id="gallery">
+        <div class="gallery" id="imageGallery">
             <div class="loading">正在加载图片...</div>
         </div>
     </div>
     
     <footer>
-        
     </footer>
     
+    <div class="toast" id="toast"></div>
+
     <script>
-        // 配置您的GitHub信息
-        const GITHUB_USERNAME = 'Brandon30124';
-        const REPOSITORY_NAME = 'Monkey';
-        const IMAGE_FOLDER = ''; // 图片所在的文件夹路径，如果图片在根目录则设为空字符串 ''
-        const BRANCH = 'main'; // 仓库分支，通常是main或master
+        // 重要提示：你需要修改以下变量以匹配你的GitHub信息
+        const GITHUB_USERNAME = 'Brandon30124';  // 替换为你的GitHub用户名
+        const REPO_NAME = 'Monkey';  // 替换为你的仓库名称
+        const IMAGES_FOLDER = 'hou';  // 替换为包含图片的文件夹名称
         
-        // 获取并显示图片
-        async function loadImages() {
-            const gallery = document.getElementById('gallery');
+        // 获取图片的函数
+        async function fetchImages() {
+            const gallery = document.getElementById('imageGallery');
             
             try {
-                // 构建GitHub API URL
-                const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPOSITORY_NAME}/contents/${IMAGE_FOLDER}?ref=${BRANCH}`;
-                
+                // 使用GitHub API获取仓库内容
+                const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${IMAGES_FOLDER}`;
                 const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error('API限制，请稍后重试');
-                    } else if (response.status === 404) {
-                        throw new Error('仓库不存在或路径错误');
-                    } else {
-                        throw new Error(`HTTP错误: ${response.status}`);
-                    }
+                    throw new Error('无法获取图片数据');
                 }
                 
-                const contents = await response.json();
+                const files = await response.json();
                 
-                // 过滤出PNG和JPG图片
-                const images = contents.filter(item => 
-                    item.type === 'file' && 
-                    (item.name.toLowerCase().endsWith('.png') || 
-                     item.name.toLowerCase().endsWith('.jpg') ||
-                     item.name.toLowerCase().endsWith('.jpeg'))
-                );
-                
-                // 清空画廊
+                // 清空加载提示
                 gallery.innerHTML = '';
                 
-                if (images.length === 0) {
-                    gallery.innerHTML = '<div class="loading">暂无图片</div>';
+                // 过滤出图片文件
+                const imageFiles = files.filter(file => {
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+                });
+                
+                if (imageFiles.length === 0) {
+                    gallery.innerHTML = '<div class="loading">在指定文件夹中未找到图片文件</div>';
                     return;
                 }
                 
-                // 显示图片
-                images.forEach(image => {
+                // 为每个图片创建卡片
+                imageFiles.forEach((file, index) => {
                     const imageCard = document.createElement('div');
                     imageCard.className = 'image-card';
                     
-                    imageCard.innerHTML = `
-                        <div class="image-container">
-                            <img src="${image.download_url}" alt="${image.name}" loading="lazy">
-                        </div>
-                        <div class="image-info">
-                            <h3 class="image-title">${image.name}</h3>
-                            <button data-url="${image.download_url}" data-name="${image.name}">
-                                <span class="btn-text">下载</span>
-                            </button>
-                        </div>
-                    `;
+                    const img = document.createElement('img');
+                    img.src = file.download_url;
+                    img.alt = file.name;
+                    
+                    // 为移动端添加长按事件监听
+                    img.addEventListener('contextmenu', function(e) {
+                        e.preventDefault();
+                        showToast('长按图片可保存到相册');
+                    });
+                    
+                    // 创建下载按钮
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.className = 'download-btn';
+                    downloadBtn.textContent = '下载';
+                    downloadBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        downloadImage(file.download_url, index);
+                    });
+                    
+                    imageCard.appendChild(img);
+                    imageCard.appendChild(downloadBtn);
                     
                     gallery.appendChild(imageCard);
                 });
                 
-                // 为所有下载按钮添加事件监听器
-                document.querySelectorAll('.image-info button').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const url = this.getAttribute('data-url');
-                        const name = this.getAttribute('data-name');
-                        downloadImage(url, name, this);
-                    });
-                });
-                
             } catch (error) {
-                gallery.innerHTML = `<div class="loading">加载失败: ${error.message}</div>`;
-                console.error('Error loading images:', error);
+                console.error('获取图片时出错:', error);
+                gallery.innerHTML = `<div class="loading">错误: ${error.message}</div>`;
             }
         }
         
-        // 下载图片函数
-        async function downloadImage(url, filename, button) {
-            try {
-                // 显示加载提示
-                const btnText = button.querySelector('.btn-text');
-                const originalText = btnText.textContent;
-                btnText.textContent = '下载中...';
-                button.disabled = true;
-                
-                // 获取图片数据
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('无法下载图片');
-                }
-                
-                const blob = await response.blob();
-                
-                // 创建临时下载链接
-                const blobUrl = URL.createObjectURL(blob);
-                
-                // 针对不同设备使用不同的下载方法
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    // 移动设备：使用新窗口打开图片，让用户手动保存
-                    const newWindow = window.open(blobUrl, '_blank');
-                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                        // 如果弹窗被阻止，显示提示
-                        alert('请在弹出窗口中长按图片保存到相册。如果未弹出，请检查浏览器设置允许弹窗。');
-                    }
-                } else {
-                    // 桌面设备：使用下载链接
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-                
-                // 清理
-                setTimeout(() => {
-                    URL.revokeObjectURL(blobUrl);
-                }, 100);
-                
-                // 恢复按钮状态
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                    button.disabled = false;
-                }, 1500);
-                
-            } catch (error) {
-                console.error('下载失败:', error);
-                alert('下载失败，请重试或稍后再试');
-                
-                // 恢复按钮状态
-                const btnText = button.querySelector('.btn-text');
-                btnText.textContent = '下载';
-                button.disabled = false;
-            }
+        // 下载图片函数 - 使用统一命名
+        function downloadImage(url, index) {
+            // 创建隐藏的a标签进行下载
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // 使用统一命名格式，不显示原始图片名称
+            a.download = `monkey_image_${index + 1}.jpg`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            showToast('图片下载中...');
+        }
+        
+        // 显示提示消息
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
         }
         
         // 页面加载完成后获取图片
-        document.addEventListener('DOMContentLoaded', loadImages);
+        document.addEventListener('DOMContentLoaded', fetchImages);
     </script>
 </body>
 </html>
